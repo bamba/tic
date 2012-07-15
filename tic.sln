@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tic", "tic.csproj", "{FAF752E2-6579-4A1D-9F22-E3F31B02C106}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tic", "tic\tic.csproj", "{FAF752E2-6579-4A1D-9F22-E3F31B02C106}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
