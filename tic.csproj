@@ -205,7 +205,11 @@
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
+<<<<<<< HEAD
   <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+=======
+   <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+>>>>>>> 3d54afa2dc9d4590cae0cca73cc2a3f463a0b648
     <AspNetCompiler Condition="'$(IsDesktopBuild)' != 'false'" VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
     <AspNetCompiler Condition="'$(IsDesktopBuild)' == 'false'" VirtualPath="temp" PhysicalPath="$(PublishDir)\_PublishedWebsites\$(ProjectName)" />
   </Target>
