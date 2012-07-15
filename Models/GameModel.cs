@@ -22,7 +22,10 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                List<game> games = sqlConnection.Query<game>(@"select * from game where game_id in (select game_id from user_game where user_id = @userid)", new { userid = user_id }).ToList();
+                List<game> games = sqlConnection.Query<game>(@"SELECT g.*, p.user_one_id, p.user_two_id
+                                                               FROM game g 
+                                                               INNER JOIN players p ON p.game_id = g.game_id
+                                                               WHERE p.user_one_id = @userid OR p.user_two_id = @userid", new { userid = user_id }).ToList();
                 sqlConnection.Close();
                 return games;
             }
@@ -32,7 +35,11 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                List<game> games = sqlConnection.Query<game>(@"select * from game where status = NULL and game_id in (select game_id from user_game where user_id = @userid)", new { userid = user_id }).ToList();
+                List<game> games = sqlConnection.Query<game>(@"SELECT g.*, p.user_one_id, p.user_two_id
+                                                               FROM game g 
+                                                               INNER JOIN players p ON p.game_id = g.game_id
+                                                               WHERE g.status IS NULL AND (p.user_one_id = @userid OR p.user_two_id = @userid)", 
+                                                             new { userid = user_id }).ToList();
                 sqlConnection.Close();
                 return games;
             }
@@ -42,7 +49,10 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                List<game> games = sqlConnection.Query<game>(@"select * from game where status = 'F' and game_id in (select game_id from user_game where user_id = @userid)", new { userid = user_id }).ToList();
+                List<game> games = sqlConnection.Query<game>(@"SELECT g.*, p.user_one_id, p.user_two_id
+                                                               FROM game g 
+                                                               INNER JOIN players p ON p.game_id = g.game_id
+                                                               WHERE g.status = 'F' AND (p.user_one_id = @userid OR p.user_two_id = @userid)", new { userid = user_id }).ToList();
                 sqlConnection.Close();
                 return games;
             }
@@ -52,7 +62,10 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                game games = sqlConnection.Query<game>(@"select * from game where game_id = @gameid)", new { gameid = game_id }).First();
+                game games = sqlConnection.Query<game>(@"SELECT g.*, p.user_one_id, p.user_two_id
+                                                               FROM game g 
+                                                               INNER JOIN players p ON p.game_id = g.game_id
+                                                               WHERE g.game_id = @gameid", new { gameid = game_id }).First();
                 sqlConnection.Close();
                 return games;
             }
@@ -87,7 +100,7 @@ namespace tic.Models
                 
             }
         }
-        public void AddGame(game myGame, user user)
+        public game AddGame(game myGame)
         {
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
@@ -117,16 +130,18 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                myGame.game_id = sqlConnection.Query<int>(@"insert into user_game (user_id,game_id)
-                                                            values(@userid,@gameid);",
+                myGame.game_id = sqlConnection.Query<int>(@"insert into players (game_id,user_one_id,user_two_id)
+                                                            values(@gameid,@userOneId,@userTwoId);",
                     new
                     {
                         gameid = myGame.game_id,
-                        userid = user.user_id 
+                        userOneId = myGame.user_one_id,
+                        userTwoId = myGame.user_two_id
                     }).Single();
 
                 sqlConnection.Close();
             }
+            return myGame;
 
         }
         public user GetUserById(int id)
@@ -139,6 +154,23 @@ namespace tic.Models
                 return usr;
             }
         }
+        public user AddUser(user myUser)
+        {
+            using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
+            {
+                sqlConnection.Open();
+                myUser.user_id = sqlConnection.Query<int>(@"insert into user (email,password)
+                                        values(@myEmail,@myPassword);
+                                        SELECT CAST(SCOPE_IDENTITY() AS INT)",
+                    new
+                    {
+                        myEmail = myUser.email,
+                        myPassword = myUser.password
+                    }).Single();
 
+                sqlConnection.Close();
+            }
+            return myUser;
+        }
     }
 }

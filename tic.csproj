@@ -205,9 +205,14 @@
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
+  <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler Condition="'$(IsDesktopBuild)' != 'false'" VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
+    <AspNetCompiler Condition="'$(IsDesktopBuild)' == 'false'" VirtualPath="temp" PhysicalPath="$(PublishDir)\_PublishedWebsites\$(ProjectName)" />
+  </Target>
+  <!--
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
-  </Target>
+  </Target> -->
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">

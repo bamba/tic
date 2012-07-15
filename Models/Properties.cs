@@ -21,12 +21,10 @@ namespace tic.Models
         public int C2 { set; get; }
         public int C3 { set; get; }
         public int winner { set; get; }
+        public int user_one_id { set; get; }
+        public int user_two_id { set; get; }
     }
-    public class user_game
-    {
-        public int game_id { set; get; }
-        public int user_id { set; get; }
-    }
+    
     public class user
     {
         public int user_id { set; get; }
