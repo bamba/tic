@@ -19,6 +19,9 @@ namespace tic.Controllers
         }
         public JsonResult SetUser(string email, string password, string create)
         {
+            if(email == "" && password == "")
+                return Json(new user(), JsonRequestBehavior.AllowGet);
+
             GameModel data = new GameModel();
             user myUser = data.GetUserByEmailPassword(email, password);
             if (myUser == null)
@@ -44,7 +47,7 @@ namespace tic.Controllers
             if (myGame != null)
                 return Json(myGame, JsonRequestBehavior.AllowGet);
             else
-                return Json("", JsonRequestBehavior.AllowGet);
+                return Json(new game(), JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetUsers(int curent_user_id)
         {
