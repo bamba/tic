@@ -159,7 +159,7 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                user usr = sqlConnection.Query<user>(@"select * from user where email = @email and password = @password)", new { email = email, password = password }).First();
+                user usr = sqlConnection.Query<user>(@"select * from user where email = @email and password = @password", new { email = email, password = password }).First();
                 sqlConnection.Close();
                 return usr;
             }
