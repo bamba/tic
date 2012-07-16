@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using tic.Models;
+using System.Web.Script.Serialization;
 
 namespace tic.Controllers
 {
@@ -14,8 +15,6 @@ namespace tic.Controllers
 
         public JsonResult Index(string JsonString)
         {
-            string my = JsonString;
-
             return Json("OK", JsonRequestBehavior.AllowGet);
         }
         public JsonResult SetUser(string email, string password, string create)
@@ -32,11 +31,11 @@ namespace tic.Controllers
                 }
                 else
                 {
-                    return Json("ERROR", JsonRequestBehavior.AllowGet);
+                    return Json(new user(), JsonRequestBehavior.AllowGet);
                 }
             }
 
-            return Json("OK", JsonRequestBehavior.AllowGet);
+            return Json(myUser, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetGame(int game_id)
         {
@@ -52,15 +51,24 @@ namespace tic.Controllers
             GameModel data = new GameModel();
             List<user> users = data.GetAllUsers(curent_user_id);
 
-            return Json("OK", JsonRequestBehavior.AllowGet);
+            return Json(users, JsonRequestBehavior.AllowGet);
         }
         public JsonResult UpdateGame(string game)
         {
-            return Json("OK", JsonRequestBehavior.AllowGet);
+            GameModel data = new GameModel();
+            JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+            game myGame = (game)json_serializer.DeserializeObject(game);
+            data.UpdateGame(myGame);
+            return Json(myGame, JsonRequestBehavior.AllowGet);
         }
         public JsonResult AddGame(string game)
         {
-            return Json("OK", JsonRequestBehavior.AllowGet);
+            GameModel data = new GameModel();
+            JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+            game myGame = (game)json_serializer.DeserializeObject(game);
+            myGame = data.AddGame(myGame);
+            return Json(myGame, JsonRequestBehavior.AllowGet);
         }
+
     }
 }
