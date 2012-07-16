@@ -19,7 +19,7 @@ namespace tic.Controllers
         }
         public JsonResult SetUser(string email, string password, string create)
         {
-            if(email == "" && password == "")
+            if(email == null && password == null)
                 return Json(new user(), JsonRequestBehavior.AllowGet);
 
             GameModel data = new GameModel();
@@ -40,24 +40,45 @@ namespace tic.Controllers
 
             return Json(myUser, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GetGame(int game_id)
+        public JsonResult GetGame(string game_id)
         {
+            if(game_id == null)
+                return Json(new game(), JsonRequestBehavior.AllowGet);
+            game myGame;
             GameModel data = new GameModel();
-            game myGame = data.GetGameByID(game_id);
+            try
+            {
+                myGame = data.GetGameByID(int.Parse(game_id));
+            }
+            catch {
+                return Json(new game(), JsonRequestBehavior.AllowGet);
+            }
             if (myGame != null)
                 return Json(myGame, JsonRequestBehavior.AllowGet);
             else
                 return Json(new game(), JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GetUsers(int curent_user_id)
+        public JsonResult GetUsers(string curent_user_id)
         {
+            if(curent_user_id == null)
+                return Json(new user(), JsonRequestBehavior.AllowGet);
             GameModel data = new GameModel();
-            List<user> users = data.GetAllUsers(curent_user_id);
+            List<user> users;
+            try
+            {
+               users = data.GetAllUsers(int.Parse(curent_user_id));
+            }
+            catch
+            {
+                return Json(new user(), JsonRequestBehavior.AllowGet);
+            }
 
             return Json(users, JsonRequestBehavior.AllowGet);
         }
         public JsonResult UpdateGame(string game)
         {
+            if(game == null)
+                return Json(new game(), JsonRequestBehavior.AllowGet);
             GameModel data = new GameModel();
             JavaScriptSerializer json_serializer = new JavaScriptSerializer();
             game myGame = (game)json_serializer.DeserializeObject(game);
@@ -66,6 +87,8 @@ namespace tic.Controllers
         }
         public JsonResult AddGame(string game)
         {
+            if(game == null)
+                return Json(new game(), JsonRequestBehavior.AllowGet);
             GameModel data = new GameModel();
             JavaScriptSerializer json_serializer = new JavaScriptSerializer();
             game myGame = (game)json_serializer.DeserializeObject(game);
