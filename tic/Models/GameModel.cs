@@ -149,7 +149,7 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                user usr = sqlConnection.Query<user>(@"select * from user where user_id = @userid)", new { userid = id }).First();
+                user usr = sqlConnection.Query<user>(@"select * from user where user_id = @userid", new { userid = id }).First();
                 sqlConnection.Close();
                 return usr;
             }
