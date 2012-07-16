@@ -11,7 +11,7 @@ namespace tic.Models
     {
         string Connectionstring;// = @"Data Source=.\SQLEXPRESS;AttachDbFilename=C:\Users\ndalama\Documents\MyData.mdf;Integrated Security=True;Connect Timeout=30;User Instance=True";
  
-        GameModel()
+        public GameModel()
         {
             string dir = HostingEnvironment.MapPath(@"~/App_Data/MyData.mdf");
             Connectionstring = string.Format(@"Data Source=.\SQLEXPRESS;AttachDbFilename={0};Integrated Security=True;Connect Timeout=30;User Instance=True",dir);
@@ -130,7 +130,7 @@ namespace tic.Models
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
             {
                 sqlConnection.Open();
-                myGame.game_id = sqlConnection.Query<int>(@"insert into players (game_id,user_one_id,user_two_id)
+                sqlConnection.Query<int>(@"insert into players (game_id,user_one_id,user_two_id)
                                                             values(@gameid,@userOneId,@userTwoId);",
                     new
                     {
@@ -154,6 +154,16 @@ namespace tic.Models
                 return usr;
             }
         }
+        public user GetUserByEmailPassword(string email, string password)
+        {
+            using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
+            {
+                sqlConnection.Open();
+                user usr = sqlConnection.Query<user>(@"select * from user where email = @email and password = @password)", new { email = email, password = password }).First();
+                sqlConnection.Close();
+                return usr;
+            }
+        }
         public user AddUser(user myUser)
         {
             using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
@@ -171,6 +181,16 @@ namespace tic.Models
                 sqlConnection.Close();
             }
             return myUser;
+        }
+        public List<user> GetAllUsers(int current_user_id)
+        {
+            using (System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(Connectionstring))
+            {
+                sqlConnection.Open();
+                List<user> usr = sqlConnection.Query<user>(@"select * from user where user_id != @userid", new { userid = current_user_id }).ToList();
+                sqlConnection.Close();
+                return usr;
+            }
         }
     }
 }
